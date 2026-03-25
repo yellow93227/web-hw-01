@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hello World Boxes</title>
+<style>
+  body {
+    font-family: "Times New Roman", Times, serif; /* 圖片中的字體為襯線體 */
+    padding: 30px;
+  }
+
+  .box {
+    font-size: 32px;
+    font-weight: bold;
+    padding: 10px 15px;
+    margin-bottom: 25px; /* 設定三個區塊之間的間距 */
+  }
+
+  /* 第一個區塊：淺藍背景、紅色雙線邊框 */
+  .box-1 {
+    background-color: lightblue;
+    border: 6px double tomato; 
+  }
+
+  /* 第二個區塊：黃色背景、藍色實線邊框、圓角 */
+  .box-2 {
+    background-color: yellow;
+    border: 3px solid dodgerblue;
+    border-radius: 12px; /* 產生圓角效果 */
+  }
+
+  /* 第三個區塊：綠色背景、灰色點狀邊框 */
+  .box-3 {
+    background-color: mediumseagreen;
+    border: 10px dotted gray;
+  }
+</style>
+</head>
+<body>
+
+  <div class="box box-1">Hello World</div>
+  <div class="box box-2">Hello World</div>
+  <div class="box box-3">Hello World</div>
+
+</body>
+</html>
