@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroGreen | 永續飛行體驗</title>
+    <style>
+        /* CSS: 打造極簡精品的高級視覺感 */
+        :root {
+            --bg-dark: #0f1115;      /* 深邃的背景色 */
+            --panel-bg: #1c1f26;     /* 面板底色 */
+            --accent-green: #00e676; /* 科技感的薄荷綠 */
+            --accent-silver: #a0aab2;/* 金屬銀色字體 */
+            --text-main: #ffffff;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        p.subtitle {
+            color: var(--accent-silver);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 0.9rem;
+        }
+
+        .card {
+            background-color: var(--panel-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+        }
+
+        /* 表單與按鈕設計 */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            background-color: #0f1115;
+            color: white;
+            font-size: 1rem;
+        }
+
+        button {
+            background-color: var(--text-main);
+            color: var(--bg-dark);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--accent-green);
+            color: #000;
+        }
+
+        /* 互動拉桿設計 */
+        .slider-container {
+            margin: 25px 0;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent-green);
+        }
+
+        /* 隱藏/顯示的動態區塊 */
+        #step2, #step3 {
+            display: none; /* 預設隱藏，輸入航班後才顯示 */
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* 數據顯示區 */
+        .data-display {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid rgba(0, 230, 118, 0.2);
+            border-radius: 12px;
+            background: linear-gradient(145deg, rgba(28,31,38,1) 0%, rgba(15,17,21,1) 100%);
+        }
+
+        .highlight-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-green);
+            margin: 10px 0;
+        }
+
+        .eco-miles {
+            color: #ffd700;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* 餐點選擇按鈕 */
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .radio-label {
+            color: var(--accent-silver);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>AeroGreen</h1>
+    <p class="subtitle">重新定義未來的飛行・永續回饋計畫</p>
+
+    <div class="card" id="step1">
+        <h3 style="margin-top: 0; color: var(--accent-silver);">Step 1. 啟動您的綠色旅程</h3>
+        <p style="font-size: 0.9rem; color: #888;">請輸入航班號碼 (測試請輸入: BR871, CI100 或 JX800)</p>
+        <div class="input-group">
+            <input type="text" id="flightInput" placeholder="例如: BR871" autocomplete="off">
+            <button onclick="searchFlight()">計算基準</button>
+        </div>
+        <p id="errorMsg" style="color: #ff5252; font-size: 0.8rem; display: none;">查無此航班，請重新輸入。</p>
+    </div>
+
+    <div class="card" id="step2">
+        <h3 style="margin-top: 0; color: var(--accent-green);">Step 2. 客製化您的永續行動</h3>
+        
+        <div class="slider-container">
+            <label for="baggageSlider" style="color: var(--accent-silver);">
+                🧳 預計託運行李重量: <span id="baggageValue" style="color: white; font-weight: bold;">20</span> 公斤
+            </label>
+            <input type="range" id="baggageSlider" min="0" max="30" value="20" oninput="updateCalculations()">
+            <p style="font-size: 0.8rem; color: #666;">*減少重量能有效降低飛機油耗與碳排</p>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <label style="color: var(--accent-silver);">🍽️ 機上餐點選擇:</label>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="meal" value="0" checked onchange="updateCalculations()"> 標準餐點
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="meal" value="3" onchange="updateCalculations()"> 素食低碳餐 (-3kg)
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="meal" value="8" onchange="updateCalculations()"> 無需餐點 (-8kg)
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" id="step3">
+        <div class="data-display">
+            <p style="color: var(--accent-silver); margin: 0;">您的專屬碳足跡</p>
+            <div class="highlight-number" id="finalCO2">0 kg</div>
+            <p style="font-size: 0.9rem; margin-top: 5px;">
+                成功為地球減少了 <span id="savedCO2" style="color: white; font-weight: bold;">0</span> kg 的碳排放！
+            </p>
+            <hr style="border-color: #333; margin: 20px 0;">
+            <p style="margin: 0; font-size: 0.9rem;">
+                🎉 系統已將省下的營運成本轉換為：<br>
+                <span class="eco-miles" style="font-size: 1.2rem; display: inline-block; margin-top: 10px;">+ <span id="earnedMiles">0</span> Eco-Miles 綠色哩程</span>
+            </p>
+        </div>
+        <button style="width: 100%; background-color: var(--accent-green); color: #000;">確認航班並賺取哩程</button>
+    </div>
+</div>
+
+<script>
+    // === 這裡模擬你的 Java 後端資料庫與運算邏輯 ===
+
+    // 1. 建立虛擬航班資料庫 (Mock Database)
+    const flightDatabase = {
+        'BR871': { route: '台北-倫敦', baseCO2: 850 },
+        'CI100': { route: '台北-東京', baseCO2: 250 },
+        'JX800': { route: '台北-洛杉磯', baseCO2: 750 }
+    };
+
+    // 2. 宣告全域變數來儲存狀態
+    let currentBaseCO2 = 0;
+    const defaultBaggage = 20; // 預設行李重量為 20kg
+
+    // 3. Step 1: 搜尋航班功能
+    function searchFlight() {
+        const input = document.getElementById('flightInput').value.trim().toUpperCase();
+        const flightData = flightDatabase[input];
+
+        if (flightData) {
+            // 找到航班：記錄基準數值，並解鎖 Step 2 和 Step 3
+            currentBaseCO2 = flightData.baseCO2;
+            document.getElementById('errorMsg').style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+            document.getElementById('step3').style.display = 'block';
+            
+            // 執行一次計算來更新畫面
+            updateCalculations();
+        } else {
+            // 找不到航班：顯示錯誤提示
+            document.getElementById('errorMsg').style.display = 'block';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
+        }
+    }
+
+    // 4. Step 2 & 3: 動態運算邏輯 (資訊管理與商業邏輯的結合)
+    function updateCalculations() {
+        // 取得使用者目前的拉桿與按鈕數值
+        const currentBaggage = document.getElementById('baggageSlider').value;
+        document.getElementById('baggageValue').innerText = currentBaggage;
+
+        // 取得餐點扣減數值
+        const mealRadios = document.getElementsByName('meal');
+        let mealReduction = 0;
+        for (let radio of mealRadios) {
+            if (radio.checked) {
+                mealReduction = parseInt(radio.value);
+                break;
+            }
+        }
+
+        // --- 核心演算法 ---
+        // 假設：每減少 1 公斤行李，可減少 2 公斤碳排
+        let baggageReduction = (defaultBaggage - currentBaggage) * 2;
+        // 防呆：如果行李帶超過 20kg，不懲罰（算 0 扣減），確保正向體驗
+        if (baggageReduction < 0) baggageReduction = 0; 
+
+        // 總共減少的碳排 = 行李減少 + 餐點減少
+        const totalReduction = baggageReduction + mealReduction;
+        
+        // 最終碳足跡 = 基準 - 減少量
+        const finalCO2 = currentBaseCO2 - totalReduction;
+
+        // 商業邏輯：每減少 1kg 碳排，航空公司回饋 15 點綠色哩程
+        const earnedMiles = totalReduction * 15;
+
+        // --- 更新前端畫面 ---
+        document.getElementById('finalCO2').innerText = finalCO2 + ' kg';
+        document.getElementById('savedCO2').innerText = totalReduction;
+        
+        // 加入一點數字跳動的動畫效果感 (直接替換文字)
+        document.getElementById('earnedMiles').innerText = earnedMiles;
+    }
+</script>
+
+</body>
+</html>
