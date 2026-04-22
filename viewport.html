@@ -1,97 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Responsive Layout</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Web Page Layout</title>
+    <style>
+        /* Base reset for consistent spacing */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-<style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: #4ea1d3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+        /* Simulates the outer blue screen/background */
+        body {
+            background-color: #4da6ff; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-/* 外框 */
-.container {
-    background: #eee;
-    padding: 20px;
-    border-radius: 15px;
-    width: 90%;
-    max-width: 800px;
-}
+        /* The main white container holding all boxes */
+        .container {
+            background-color: white;
+            padding: 10px;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Creates the white gaps between rows */
+            border-radius: 8px; 
+        }
 
-/* Grid 基本 */
-.grid {
-    display: grid;
-    gap: 10px;
-}
+        /* Top Green Header */
+        .header-box {
+            background-color: #a2d149;
+            height: 150px;
+            width: 100%;
+        }
 
-/* 區塊樣式 */
-.header {
-    background: #a8cf45;
-    height: 80px;
-}
+        /* Middle Teal Section - Desktop Layout (Side-by-side) */
+        .middle-section {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
 
-.box {
-    background: #1fb5c1;
-    height: 80px;
-}
+        .teal-box {
+            background-color: #00c3c9;
+            height: 180px;
+            flex: 1; /* Ensures all three boxes share equal width */
+        }
 
-.footer {
-    background: #ccc;
-    height: 60px;
-}
+        /* Bottom Gray Section - Desktop Layout (4 columns) */
+        .bottom-section {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 10px;
+        }
 
-/* ===== 桌機版 (>=480px) ===== */
-@media (min-width: 480px) {
-    .grid {
-        grid-template-columns: repeat(3, 1fr);
-    }
+        .gray-box {
+            background-color: #e6ebec;
+            height: 80px;
+        }
 
-    .header {
-        grid-column: span 3;
-    }
+        /* Responsive Design - Mobile Layout (Viewport < 480px) */
+        @media (max-width: 480px) {
+            .middle-section {
+                flex-direction: column; /* Stack the teal boxes vertically */
+            }
 
-    .footer {
-        grid-column: span 1;
-    }
-}
-
-/* ===== 手機版 (<480px) ===== */
-@media (max-width: 479px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
-
-    .header {
-        grid-column: span 1;
-    }
-}
-</style>
-
+            .bottom-section {
+                grid-template-columns: repeat(2, 1fr); /* Change gray boxes to a 2x2 grid */
+            }
+            
+            /* Adjust heights slightly for better mobile appearance if desired */
+            .teal-box {
+                height: 120px;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
-    <div class="grid">
-        <div class="header"></div>
+    <div class="container">
+        <div class="header-box"></div>
 
-        <div class="box"></div>
-        <div class="box"></div>
-        <div class="box"></div>
+        <div class="middle-section">
+            <div class="teal-box"></div>
+            <div class="teal-box"></div>
+            <div class="teal-box"></div>
+        </div>
 
-        <div class="footer"></div>
-        <div class="footer"></div>
-        <div class="footer"></div>
-        <div class="footer"></div>
+        <div class="bottom-section">
+            <div class="gray-box"></div>
+            <div class="gray-box"></div>
+            <div class="gray-box"></div>
+            <div class="gray-box"></div>
+        </div>
     </div>
-</div>
 
 </body>
 </html>
