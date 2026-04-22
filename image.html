@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Image Styling Practice</title>
+    <style>
+        /* Container to align the images side-by-side */
+        .image-gallery {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center; /* Centers the smaller middle image vertically */
+            width: 100%;
+            max-width: 1000px; /* Adjust as needed for your screen */
+            margin: 0 auto;
+        }
+
+        /* Left Image: Rounded corners, strictly 33% width, no distortion */
+        .img-left {
+            width: 33%;
+            height: 300px; /* Matching the height of the right image for balance */
+            border-radius: 18px;
+            object-fit: cover; /* Crops the image to fit the dimensions without stretching */
+        }
+
+        /* Middle Image: Perfect circle, strict pixel dimensions, no distortion */
+        .img-middle {
+            width: 150px;
+            height: 150px;
+            border-radius: 150px; /* Applying 150px (or 50%) makes a square image circular */
+            object-fit: cover; 
+        }
+
+        /* Right Image: Strict dimensions, forced distortion */
+        .img-right {
+            width: 33%;
+            height: 300px;
+            object-fit: fill; /* Forces the image to stretch and squish into the container */
+        }
+    </style>
+</head>
+<body>
+
+    <p>1. Let's practice styling images by CSS. Please create a web page as shown below. Please upload the web page to the webspace and upload the link to the portal.</p>
+
+    <div class="image-gallery">
+        <img src="eiffel-tower.jpg" alt="Eiffel Tower Left" class="img-left">
+        <img src="cliff-view.jpg" alt="Cliff View" class="img-middle">
+        <img src="eiffel-tower.jpg" alt="Eiffel Tower Right" class="img-right">
+    </div>
+
+</body>
+</html>
