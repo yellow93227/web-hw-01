@@ -5,37 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSS Image Styling Practice</title>
     <style>
-        /* Container to align the images side-by-side */
+        /* 整體排版設定，讓圖片橫向排列並置中 */
         .image-gallery {
             display: flex;
             justify-content: space-between; 
-            align-items: center; /* Centers the smaller middle image vertically */
+            align-items: center; 
             width: 100%;
-            max-width: 1000px; /* Adjust as needed for your screen */
+            max-width: 900px;
             margin: 0 auto;
         }
 
-        /* Left Image: Rounded corners, strictly 33% width, no distortion */
+        /* 左邊圖片：寬度33%、高度300px、圓角18px、不變形 */
         .img-left {
             width: 33%;
-            height: 300px; /* Matching the height of the right image for balance */
+            height: 300px; 
             border-radius: 18px;
-            object-fit: cover; /* Crops the image to fit the dimensions without stretching */
+            object-fit: cover; /* 關鍵：裁切圖片確保不變形 (no distortion) */
         }
 
-        /* Middle Image: Perfect circle, strict pixel dimensions, no distortion */
+        /* 中間圖片：寬高150px、正圓形、不變形 */
         .img-middle {
             width: 150px;
             height: 150px;
-            border-radius: 150px; /* Applying 150px (or 50%) makes a square image circular */
-            object-fit: cover; 
+            border-radius: 50%; /* 也可以寫 border-radius: 150px，用來變成圓形 */
+            object-fit: cover; /* 不變形 (no distortion) */
         }
 
-        /* Right Image: Strict dimensions, forced distortion */
+        /* 右邊圖片：寬度33%、高度300px、強制拉伸變形 */
         .img-right {
             width: 33%;
             height: 300px;
-            object-fit: fill; /* Forces the image to stretch and squish into the container */
+            object-fit: fill; /* 關鍵：強制拉伸填滿，產生變形效果 (distortion) */
         }
     </style>
 </head>
@@ -44,9 +44,11 @@
     <p>1. Let's practice styling images by CSS. Please create a web page as shown below. Please upload the web page to the webspace and upload the link to the portal.</p>
 
     <div class="image-gallery">
-        <img src="eiffel-tower.jpg" alt="Eiffel Tower Left" class="img-left">
-        <img src="cliff-view.jpg" alt="Cliff View" class="img-middle">
-        <img src="eiffel-tower.jpg" alt="Eiffel Tower Right" class="img-right">
+        <img src="https://images.unsplash.com/photo-1543305615-56541f4eb553?w=600&q=80" alt="Eiffel Tower Left" class="img-left">
+        
+        <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80" alt="Cliff View" class="img-middle">
+        
+        <img src="https://images.unsplash.com/photo-1543305615-56541f4eb553?w=600&q=80" alt="Eiffel Tower Right" class="img-right">
     </div>
 
 </body>
