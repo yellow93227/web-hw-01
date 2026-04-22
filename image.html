@@ -20,14 +20,14 @@
             width: 33%;
             height: 300px; 
             border-radius: 18px;
-            object-fit: cover; /* 關鍵：裁切圖片確保不變形 (no distortion) */
+            object-fit: cover; /* 不變形 (no distortion) */
         }
 
         /* 中間圖片：寬高150px、正圓形、不變形 */
         .img-middle {
             width: 150px;
             height: 150px;
-            border-radius: 50%; /* 也可以寫 border-radius: 150px，用來變成圓形 */
+            border-radius: 50%; /* 變成正圓形 */
             object-fit: cover; /* 不變形 (no distortion) */
         }
 
@@ -35,19 +35,18 @@
         .img-right {
             width: 33%;
             height: 300px;
-            object-fit: fill; /* 關鍵：強制拉伸填滿，產生變形效果 (distortion) */
+            object-fit: fill; /* 強制拉伸變形 (distortion) */
         }
     </style>
 </head>
 <body>
 
-    
     <div class="image-gallery">
-        <img src="https://images.unsplash.com/photo-1543305615-56541f4eb553?w=600&q=80" alt="Eiffel Tower Left" class="img-left">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/Tour_Eiffel_Wikimedia_Commons.jpg" alt="Eiffel Tower Left" class="img-left">
         
-        <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400&q=80" alt="Cliff View" class="img-middle">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/46/Trolltunga_2.jpg" alt="Cliff View" class="img-middle">
         
-        <img src="https://images.unsplash.com/photo-1543305615-56541f4eb553?w=600&q=80" alt="Eiffel Tower Right" class="img-right">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a8/Tour_Eiffel_Wikimedia_Commons.jpg" alt="Eiffel Tower Right" class="img-right">
     </div>
 
 </body>
