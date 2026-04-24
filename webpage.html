@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design to Code Practice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" rel="stylesheet">
+    <style>
+        /* 基礎設定 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* 模擬右側的預覽視窗容器，寬度依照設計稿標示的 496px */
+        .preview-container {
+            width: 496px; 
+            background-color: #ffffff;
+            border: 1px solid #eaeaea;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* 頂部工具列 (包含按鈕) */
+        .toolbar {
+            display: flex;
+            justify-content: flex-end; /* 讓按鈕靠右 */
+            padding: 10px 18px; /* 依照設計稿的間距 */
+            background-color: #f6f6f6; /* header bg color #f6f6f6 */
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        /* --- 這是作業要求的核心：按鈕樣式 --- */
+        .info-btn {
+            height: 22px;                 /* size: h22 */
+            border-radius: 8px;           /* size: R8 */
+            font-family: 'Roboto', sans-serif;
+            font-size: 13px;              /* Roboto Regular 13px */
+            color: #2f2f2f;               /* Color: #2f2f2f */
+            background-color: #ffffff;    /* background #ffffff */
+            border: 1px solid #2f2f2f;    /* outline 1px #2f2f2f */
+            padding: 0 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .info-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* 圖片區域 */
+        .image-wrapper {
+            padding: 26px 20px; /* 依照設計稿的間距標示 26 和 20 */
+            text-align: center;
+        }
+
+        .preview-image {
+            width: 450px; /* Default 450x240 */
+            height: 240px;
+            object-fit: cover;
+        }
+
+        /* 詳細資訊面板 (預設隱藏) */
+        .details-panel {
+            display: none; /* 初始狀態為不顯示 */
+            padding: 0 20px 20px 20px;
+            font-size: 13px;
+            color: #707070; /* 預覽內文字顏色 */
+            line-height: 1.8;
+        }
+
+        /* 當加入 .active class 時顯示面板 */
+        .details-panel.active {
+            display: block;
+        }
+        
+        /* 模擬設計稿下方綠色底色的文字區塊樣式 */
+        .detail-item {
+            background-color: #e6f7ea;
+            padding: 2px 8px;
+            margin-bottom: 4px;
+            color: #2ca048;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="preview-container">
+        <div class="toolbar">
+            <button class="info-btn" id="toggleBtn">查看資訊</button>
+        </div>
+
+        <div class="image-wrapper">
+            <img src="https://picsum.photos/450/240" alt="Bridge Preview" class="preview-image">
+        </div>
+
+        <div class="details-panel" id="detailsPanel">
+            <div class="detail-item">修改日期 : 2017/10/12</div>
+            <div class="detail-item">類型 : JPG</div>
+            <div class="detail-item">大小 : 466.97KB</div>
+            <div class="detail-item">路徑 : \\designcenter.qnap.com.tw\DesignCenter\PM...</div>
+        </div>
+    </div>
+
+    <script>
+        // 取得按鈕和資訊面板的 HTML 元素
+        const btn = document.getElementById('toggleBtn');
+        const panel = document.getElementById('detailsPanel');
+
+        // 監聽按鈕的點擊事件
+        btn.addEventListener('click', function() {
+            // 切換資訊面板的 'active' class (有就移除，沒有就加上)
+            panel.classList.toggle('active');
+
+            // 根據面板是否顯示，更改按鈕上的文字
+            if (panel.classList.contains('active')) {
+                btn.textContent = '收起資訊';
+            } else {
+                btn.textContent = '查看資訊';
+            }
+        });
+    </script>
+
+</body>
+</html>
