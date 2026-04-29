@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Form Validation Practice</title>
+    <style>
+        /* 簡單的字體和間距設定，讓畫面比較好看 */
+        body {
+            font-family: serif; /* 配合圖片中的字體風格 */
+            margin: 20px;
+        }
+        input, button {
+            font-size: 16px;
+            padding: 2px 5px;
+        }
+        #message {
+            font-size: 18px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <p>Please input a number between 150 and 300:</p>
+
+    <input type="text" id="numInput">
+    <button onclick="validateForm()">Submit</button>
+
+    <p id="message"></p>
+
+    <script>
+        function validateForm() {
+            // 1. 取得輸入框的值與顯示訊息的元素
+            let inputValue = document.getElementById("numInput").value;
+            let textMsg = document.getElementById("message");
+
+            // 2. 將輸入的值轉換成數字型態
+            let num = Number(inputValue);
+
+            // 3. 判斷邏輯
+            // 如果輸入的不是數字，或者根本沒輸入東西
+            if (isNaN(num) || inputValue.trim() === "") {
+                textMsg.innerHTML = "Please enter a valid number";
+            } 
+            // 如果數字小於 150
+            else if (num < 150) {
+                textMsg.innerHTML = "Value too small";
+            } 
+            // 如果數字大於 300
+            else if (num > 300) {
+                textMsg.innerHTML = "Value too large";
+            } 
+            // 如果介於 150 到 300 之間
+            else {
+                textMsg.innerHTML = "Input OK";
+            }
+        }
+    </script>
+
+</body>
+</html>
