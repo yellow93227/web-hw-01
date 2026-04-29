@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Mouse Interaction Practice</title>
+    <style>
+        /* 簡單的排版設定，模擬圖片中的方框 */
+        .box {
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 150px;
+            text-align: center;
+            font-family: serif;
+        }
+        
+        #displayText {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: black; /* 預設文字顏色 */
+        }
+        
+        button {
+            padding: 5px 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <div id="displayText">Hello</div>
+        <button id="actionBtn">Button</button>
+    </div>
+
+    <script>
+        // 取得文字和按鈕元素
+        const textObj = document.getElementById('displayText');
+        const btnObj = document.getElementById('actionBtn');
+
+        // 1. 當滑鼠移到按鈕上 (Mouse over button)：文字顏色變成桃紅色 (Magenta)
+        btnObj.addEventListener('mouseover', function() {
+            textObj.style.color = 'magenta';
+        });
+
+        // 2. 當滑鼠點擊按鈕 (Mouse click button)：文字內容改變
+        btnObj.addEventListener('click', function() {
+            textObj.textContent = 'Mouse Click';
+            textObj.style.color = 'magenta'; 
+        });
+
+        // (補充) 滑鼠移出按鈕時恢復原狀，方便重複測試
+        btnObj.addEventListener('mouseout', function() {
+            if (textObj.textContent === 'Hello') {
+                textObj.style.color = 'black';
+            }
+        });
+    </script>
+
+</body>
+</html>
