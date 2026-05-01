@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroGreen 航班碳排計算系統</title>
+    <style>
+        /* 精品航空風格 CSS */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #121418;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            padding-top: 50px;
+        }
+        .container {
+            background-color: #1e2229;
+            padding: 30px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        h2 { margin-top: 0; color: #f0f0f0; letter-spacing: 1px; }
+        .input-group { display: flex; gap: 10px; margin-top: 15px; }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background-color: #2a2f38;
+            color: white;
+            font-size: 16px;
+            text-transform: uppercase; /* 自動轉大寫 */
+        }
+        button {
+            padding: 12px 20px;
+            background-color: #00e676;
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:hover { background-color: #00c853; }
+        
+        /* 錯誤提示與結果顯示區 */
+        #error-msg { color: #ff5252; font-size: 14px; margin-top: 10px; display: none; }
+        
+        #result-panel {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #2a2f38;
+            border-left: 4px solid #00e676;
+            border-radius: 6px;
+            display: none; /* 預設隱藏 */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .result-item { margin: 10px 0; color: #a0aab2; }
+        .result-value { color: #fff; font-weight: bold; font-size: 1.1em; }
+        .co2-highlight { color: #00e676; font-size: 2em; font-weight: bold; margin-top: 10px; display: block;}
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>AeroGreen 綠色飛行</h2>
+    <p style="color: #a0aab2; font-size: 14px;">Step 1. 請輸入您的航班編號以計算基準碳足跡</p>
+    
+    <div class="input-group">
+        <input type="text" id="flightInput" placeholder="輸入航班 (例如: BR871, CI100)">
+        <button onclick="searchFlight()">計算碳排</button>
+    </div>
+    
+    <!-- 防呆錯誤提示 -->
+    <p id="error-msg">⚠️ 系統測試階段，僅開放部分熱門航線。請嘗試輸入 BR871 或 CI100。</p>
+
+    <!-- 查詢結果面板 -->
+    <div id="result-panel">
+        <div class="result-item">航線： <span class="result-value" id="res-route">--</span></div>
+        <div class="result-item">執飛機型： <span class="result-value" id="res-aircraft">--</span></div>
+        <div class="result-item" style="margin-top: 15px;">本航班基準碳排放量：</div>
+        <span class="co2-highlight"><span id="res-co2">0</span> kg</span>
+    </div>
+</div>
+
+<script>
+    // 這裡就是你系統的核心：模擬資料庫 (Mock Database)
+    // 裡面存放了我們預先設定好的航班資料
+    const flightDatabase = {
+        'BR871': { 
+            route: '台北 (TPE) ✈️ 倫敦 (LHR)', 
+            aircraft: 'Boeing 777-300ER', 
+            baseCO2: 850 
+        },
+        'CI100': { 
+            route: '台北 (TPE) ✈️ 東京 (NRT)', 
+            aircraft: 'Airbus A350-900 (新世代節能)', 
+            baseCO2: 250 
+        },
+        'JX800': { 
+            route: '台北 (TPE) ✈️ 洛杉磯 (LAX)', 
+            aircraft: 'Airbus A350-900', 
+            baseCO2: 750 
+        }
+    };
+
+    function searchFlight() {
+        // 1. 抓取使用者輸入的值，去掉空白，並轉成大寫
+        const inputStr = document.getElementById('flightInput').value.trim().toUpperCase();
+        
+        const errorMsg = document.getElementById('error-msg');
+        const resultPanel = document.getElementById('result-panel');
+
+        // 2. 核心邏輯：去模擬資料庫裡面查表
+        if (flightDatabase[inputStr]) {
+            // 如果找得到資料！
+            const data = flightDatabase[inputStr];
+            
+            // 把資料庫裡的值塞到畫面上
+            document.getElementById('res-route').innerText = data.route;
+            document.getElementById('res-aircraft').innerText = data.aircraft;
+            
+            // 創造一個數字從 0 往上跳的動態感 (這會讓 Demo 看起來很專業)
+            animateValue("res-co2", 0, data.baseCO2, 800);
+
+            // 隱藏錯誤，顯示結果面板
+            errorMsg.style.display = 'none';
+            resultPanel.style.display = 'block';
+
+        } else {
+            // 如果輸入了 AA123 這種找不到的資料 (防呆機制啟動)
+            errorMsg.style.display = 'block';
+            resultPanel.style.display = 'none';
+        }
+    }
+
+    // 這是一個讓數字跳動的輔助動畫函數，增加質感
+    function animateValue(id, start, end, duration) {
+        let obj = document.getElementById(id);
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.innerHTML = Math.floor(progress * (end - start) + start);
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+</script>
+
+</body>
+</html>
