@@ -241,6 +241,17 @@
             color: #999;
             font-size: 0.8rem;
         }
+        /* --- Footer 連結專屬樣式 --- */
+        .footer-col li a {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-col li a:hover {
+            color: var(--primary-green);
+        }
+        
         .hero-img {
             width: 100%;          /* 讓圖片寬度跟著區塊縮放 */
             max-width: 800px;     /* 限制最大寬度，避免圖片太巨大 */
@@ -357,25 +368,30 @@
 
     <footer>
         <div class="footer-content">
+            <!-- 第一欄：品牌介紹 -->
             <div class="footer-col">
                 <a href="#" class="logo">AeroGreen</a>
                 <p style="margin-top:15px; padding-right: 20px;">致力於推廣永續航空，透過透明的數據與激勵機制，引領航空業邁向淨零未來。</p>
             </div>
+            
+            <!-- 第二欄：參考文獻 (你剛剛加的四個官方超強連結都在這！) -->
             <div class="footer-col">
-                <h4>快速連結</h4>
+                <h4>參考文獻與快速連結</h4>
                 <ul>
-                    <li>SDG 13 行動</li>
-                    <li>台灣減碳藍圖</li>
-                    <li>永續燃油 (SAF)</li>
-                    <li>碳抵換計畫</li>
+                    <li><a href="https://globalgoals.tw/13-climate-action" target="_blank">SDG 13 氣候行動指標</a></li>
+                    <li><a href="https://www.ndc.gov.tw/Content_List.aspx?n=FD76ECBAE77D9811" target="_blank">臺灣 2050 淨零排放藍圖</a></li>
+                    <li><a href="https://netzero.cna.com.tw/dictionary/001846/" target="_blank">SAF 永續航空燃油介紹</a></li>
+                    <li><a href="https://carbonoffset.moenv.gov.tw/ApplicationRegistrationView/Intro" target="_blank">環境部碳抵換專案機制</a></li>
                 </ul>
             </div>
+
+            <!-- 第三欄：聯絡我們 -->
             <div class="footer-col">
                 <h4>聯絡我們</h4>
                 <ul>
-                    <li>info@aerogreen.tw</li>
-                    <li>台北市大安區航空路 100 號</li>
-                    <li>訂閱電子報獲取新知</li>
+                    <li><a href="mailto:info@aerogreen.tw">info@aerogreen.tw</a></li>
+                    <li><a href="https://maps.google.com/?q=桃園市中壢區" target="_blank">聯絡地址：桃園市中壢區</a></li>
+                    <li><a href="javascript:void(0)" onclick="alert('感謝您的訂閱！系統目前為展示階段。')">訂閱電子報獲取新知</a></li>
                 </ul>
             </div>
         </div>
