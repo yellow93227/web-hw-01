@@ -315,10 +315,21 @@
         </div>
         <div class="calc-container">
             <div class="calc-row">
-                <div class="calc-group">
+                <div class="calc-group" style="flex: 100%;"> <!-- 讓這行獨立佔滿寬度 -->
                     <label>航班號碼</label>
-                    <input type="text" id="flightNo" placeholder="例如: BR871, CI100" oninput="calculate()">
-                </div>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="flightNo" placeholder="請輸入 BR871 或 CI100" style="text-transform: uppercase;">
+                        <!-- 加上一顆按鈕，讓使用者有明確的「送出」動作 -->
+                        <button onclick="calculate()" style="background: var(--primary-green); color: white; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap;">載入航班</button>
+        </div>
+        <!-- 預設隱藏的提示訊息，找到航班或報錯時才會顯示 -->
+        <p id="flight-info" style="color: var(--primary-green); font-size: 0.95rem; margin-top: 10px; display: none; font-weight: bold;">
+            ✈️ 航線：<span id="route-text"></span> | 基準碳排：<span id="base-text"></span> kg
+        </p>
+        <p id="error-msg" style="color: #ff4d4d; font-size: 0.9rem; margin-top: 10px; display: none;">
+            ⚠️ 查無此航班，測試請輸入 BR871 或 CI100
+        </p>
+        </div>
                 <div class="calc-group">
                     <label>預計託運行李 (kg)</label>
                     <input type="number" id="baggage" value="20" min="0" oninput="calculate()">
@@ -374,33 +385,73 @@
     </footer>
 
     <script>
-        function calculate() {
-            // 基礎設定：假設基準碳排為 750kg (根據航線不同，此處為簡化邏輯)
-            const baseCarbon = 750;
-            
-            // 獲取輸入值
-            const baggage = parseFloat(document.getElementById('baggage').value) || 0;
-            const mealSaving = parseFloat(document.getElementById('meal').value);
-            
-            // 行李減重計算：假設每減少 1kg 行李，可減少 1kg 碳排 (簡化比例)
-            // 標準行李假設是 25kg
-            const baggageSaving = Math.max(0, 25 - baggage);
-            
-            // 總減量
-            const totalSavings = baggageSaving + mealSaving;
-            const finalCarbon = Math.max(0, baseCarbon - totalSavings);
-            
-            // 哩程獎勵：每減少 1kg 碳排，贈送 15 哩程
-            const ecoMiles = Math.round(totalSavings * 15);
+        // 1. 建立模擬資料庫 (Dictionary)：儲存航班資訊
+        const flightDatabase = {
+            'BR871': { route: '台北 ✈️ 倫敦', baseCarbon: 850 },
+            'CI100': { route: '台北 ✈️ 東京', baseCarbon: 250 },
+            'JX800': { route: '台北 ✈️ 洛杉磯', baseCarbon: 750 }
+        };
 
-            // 更新顯示
-            document.getElementById('totalCarbon').innerText = finalCarbon.toFixed(0);
-            document.getElementById('savingsText').innerText = `成功為地球減少了 ${totalSavings.toFixed(1)} kg 的碳排放！`;
-            document.getElementById('milesDisplay').innerText = `✦ 獲得 Eco-Miles: +${ecoMiles} ✦`;
+        function calculate() {
+            // 2. 抓取 HTML 上的元素與使用者輸入的值
+            const flightInput = document.getElementById('flightNo').value.trim().toUpperCase();
+            const flightInfo = document.getElementById('flight-info');
+            const errorMsg = document.getElementById('error-msg');
+    
+        // 設定一個預設的基準碳排 (如果還沒輸入航班，先不顯示數字)
+        let baseCarbon = 0;
+
+            // 3. 系統查表邏輯 (判斷使用者輸入的航班是否存在)
+         if (flightDatabase[flightInput]) {
+            // 成功找到航班！
+            baseCarbon = flightDatabase[flightInput].baseCarbon;
+            
+            // 把航線跟基準數字顯示在畫面上
+            document.getElementById('route-text').innerText = flightDatabase[flightInput].route;
+            document.getElementById('base-text').innerText = baseCarbon;
+        
+            // 顯示成功訊息，隱藏錯誤訊息
+            flightInfo.style.display = 'block';
+            errorMsg.style.display = 'none';
+        } else {
+            // 找不到航班 (啟動防呆機制)
+            if (flightInput !== "") { // 如果有打字但打錯，顯示紅字錯誤
+                 errorMsg.style.display = 'block';
+            } else { // 如果是空的，就不顯示錯誤
+                errorMsg.style.display = 'none';
+            }
+            flightInfo.style.display = 'none';
+            baseCarbon = 750; // 給定一個預設值，讓底下的計算機還是能動
         }
 
-        // 初始化運算一次
-        window.onload = calculate;
+        // 4. 下方個人化微調的計算邏輯
+        const baggage = parseFloat(document.getElementById('baggage').value) || 0;
+        const mealSaving = parseFloat(document.getElementById('meal').value);
+    
+        // 行李減重計算：假設標準行李是 20kg，每少帶 1kg 減 2kg 碳排
+        const baggageSaving = Math.max(0, (20 - baggage) * 2);
+    
+        // 總減量與最終碳排
+        const totalSavings = baggageSaving + mealSaving;
+        const finalCarbon = Math.max(0, baseCarbon - totalSavings);
+    
+        // 商業邏輯：哩程獎勵 (每減少 1kg 碳排，贈送 15 點 Eco-Miles)
+        const ecoMiles = Math.round(totalSavings * 15);
+
+        // 5. 將算好的結果更新到畫面上
+        // 如果還沒輸入正確航班，最終碳排先顯示 '--'，避免誤導
+        if (flightDatabase[flightInput]) {
+            document.getElementById('totalCarbon').innerText = finalCarbon.toFixed(0);
+        } else {
+            document.getElementById('totalCarbon').innerText = '--';
+        }
+    
+        document.getElementById('savingsText').innerText = `成功為地球減少了 ${totalSavings.toFixed(1)} kg 的碳排放！`;
+        document.getElementById('milesDisplay').innerText = `✦ 獲得 Eco-Miles: +${ecoMiles} ✦`;
+    }
+
+    // 網頁載入時先執行一次，把預設畫面設定好
+    window.onload = calculate;
     </script>
 </body>
 </html>
