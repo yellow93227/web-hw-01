@@ -3,155 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AeroGreen 航班碳排計算系統</title>
+    <title>AeroGreen | 永續飛行體驗系統</title>
     <style>
-        /* 精品航空風格 CSS */
+        /* CSS: 打造極簡精品航空視覺 */
+        :root {
+            --bg-dark: #0f1115;
+            --panel-bg: #1c1f26;
+            --accent-green: #00e676;
+            --accent-silver: #a0aab2;
+            --text-main: #ffffff;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #121418;
-            color: #ffffff;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px 20px;
             display: flex;
             justify-content: center;
-            padding-top: 50px;
         }
+
         .container {
-            background-color: #1e2229;
-            padding: 30px;
-            border-radius: 12px;
+            max-width: 600px;
             width: 100%;
-            max-width: 500px;
+        }
+
+        h1 { text-align: center; font-weight: 300; letter-spacing: 2px; margin-bottom: 5px; }
+        p.subtitle { color: var(--accent-silver); text-align: center; margin-bottom: 30px; font-size: 0.9rem; }
+
+        .card {
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        h2 { margin-top: 0; color: #f0f0f0; letter-spacing: 1px; }
+
+        h3 { margin-top: 0; color: var(--accent-silver); font-size: 1.1rem; border-bottom: 1px solid #333; padding-bottom: 10px;}
+
+        /* 表單與按鈕 */
         .input-group { display: flex; gap: 10px; margin-top: 15px; }
         input[type="text"] {
-            flex: 1;
-            padding: 12px;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background-color: #2a2f38;
-            color: white;
-            font-size: 16px;
-            text-transform: uppercase; /* 自動轉大寫 */
+            flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #333;
+            background-color: var(--bg-dark); color: white; font-size: 1rem; text-transform: uppercase;
         }
-        button {
-            padding: 12px 20px;
-            background-color: #00e676;
-            color: #000;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
+        button.primary-btn {
+            background-color: var(--accent-green); color: #000; border: none;
+            padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s;
         }
-        button:hover { background-color: #00c853; }
-        
-        /* 錯誤提示與結果顯示區 */
-        #error-msg { color: #ff5252; font-size: 14px; margin-top: 10px; display: none; }
-        
-        #result-panel {
-            margin-top: 25px;
-            padding: 20px;
-            background-color: #2a2f38;
-            border-left: 4px solid #00e676;
-            border-radius: 6px;
+        button.primary-btn:hover { background-color: #00c853; }
+
+        #error-msg { color: #ff5252; font-size: 0.85rem; display: none; margin-top: 10px; }
+
+        /* 隱藏區塊 (Step 2 & 3) */
+        #step2, #step3 {
             display: none; /* 預設隱藏 */
-            animation: fadeIn 0.5s ease-in-out;
+            animation: fadeIn 0.6s ease-in-out;
         }
-        .result-item { margin: 10px 0; color: #a0aab2; }
-        .result-value { color: #fff; font-weight: bold; font-size: 1.1em; }
-        .co2-highlight { color: #00e676; font-size: 2em; font-weight: bold; margin-top: 10px; display: block;}
-        
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 基準航班資訊顯示區 */
+        .baseline-info { margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 8px; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--accent-silver); font-size: 0.9rem;}
+        .info-val { color: white; font-weight: bold; }
+
+        /* 拉桿與單選按鈕 */
+        .slider-container { margin: 20px 0; }
+        input[type="range"] { width: 100%; accent-color: var(--accent-green); margin-top: 10px;}
+        .radio-group { display: flex; gap: 15px; margin-top: 10px; flex-wrap: wrap;}
+        .radio-label { color: var(--accent-silver); font-size: 0.9rem; cursor: pointer; }
+
+        /* 最終結算儀表板 */
+        .dashboard {
+            text-align: center; padding: 20px; border: 1px solid rgba(0, 230, 118, 0.3);
+            border-radius: 12px; background: linear-gradient(145deg, #1c1f26 0%, #0f1115 100%);
+        }
+        .highlight-number { font-size: 3rem; font-weight: bold; color: var(--accent-green); margin: 10px 0; }
+        .eco-miles { color: #ffd700; font-size: 1.2rem; font-weight: bold; margin-top: 15px; display: inline-block;}
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>AeroGreen 綠色飛行</h2>
-    <p style="color: #a0aab2; font-size: 14px;">Step 1. 請輸入您的航班編號以計算基準碳足跡</p>
-    
-    <div class="input-group">
-        <input type="text" id="flightInput" placeholder="輸入航班 (例如: BR871, CI100)">
-        <button onclick="searchFlight()">計算碳排</button>
-    </div>
-    
-    <!-- 防呆錯誤提示 -->
-    <p id="error-msg">⚠️ 系統測試階段，僅開放部分熱門航線。請嘗試輸入 BR871 或 CI100。</p>
+    <h1>AeroGreen</h1>
+    <p class="subtitle">將永續從道德綁架，轉為實質回饋</p>
 
-    <!-- 查詢結果面板 -->
-    <div id="result-panel">
-        <div class="result-item">航線： <span class="result-value" id="res-route">--</span></div>
-        <div class="result-item">執飛機型： <span class="result-value" id="res-aircraft">--</span></div>
-        <div class="result-item" style="margin-top: 15px;">本航班基準碳排放量：</div>
-        <span class="co2-highlight"><span id="res-co2">0</span> kg</span>
+    <!-- Step 1: 航班輸入區 -->
+    <div class="card" id="step1">
+        <h3>Step 1. 取得基準碳足跡</h3>
+        <div class="input-group">
+            <input type="text" id="flightInput" placeholder="輸入航班 (如: BR871, CI100)">
+            <button class="primary-btn" onclick="searchFlight()">系統運算</button>
+        </div>
+        <p id="error-msg">⚠️ 查無此航班，請重新輸入 (測試請用 BR871)。</p>
+
+        <!-- 航班資訊 (輸入成功後顯示) -->
+        <div class="baseline-info" id="baselineInfo" style="display: none;">
+            <div class="info-row"><span>航線：</span> <span class="info-val" id="res-route">--</span></div>
+            <div class="info-row"><span>機型：</span> <span class="info-val" id="res-aircraft">--</span></div>
+            <div class="info-row"><span>基準碳排：</span> <span class="info-val" style="color:var(--accent-green);"><span id="res-baseCO2">0</span> kg</span></div>
+        </div>
+    </div>
+
+    <!-- Step 2: 個人化微調區 -->
+    <div class="card" id="step2">
+        <h3 style="color: var(--accent-green);">Step 2. 啟動您的綠色選擇</h3>
+        
+        <div class="slider-container">
+            <label style="color: var(--accent-silver);">
+                🧳 託運行李重量: <span id="baggageValue" style="color: white; font-weight: bold; font-size: 1.2rem;">20</span> kg
+            </label>
+            <input type="range" id="baggageSlider" min="0" max="30" value="20" oninput="updateCalculations()">
+        </div>
+
+        <div style="margin-top: 25px;">
+            <label style="color: var(--accent-silver);">🍽️ 機上餐飲選擇:</label>
+            <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="meal" value="0" checked onchange="updateCalculations()"> 標準餐點</label>
+                <label class="radio-label"><input type="radio" name="meal" value="5" onchange="updateCalculations()"> 素食低碳餐</label>
+                <label class="radio-label"><input type="radio" name="meal" value="12" onchange="updateCalculations()"> 無需餐點</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Step 3: 商業價值回饋區 -->
+    <div class="card" id="step3">
+        <h3>Step 3. 您的永續回饋結算</h3>
+        <div class="dashboard">
+            <p style="color: var(--accent-silver); margin: 0;">✈️ 本趟個人化碳足跡</p>
+            <div class="highlight-number"><span id="finalCO2">0</span> <span style="font-size: 1.5rem;">kg</span></div>
+            <p style="font-size: 0.9rem; color: #ccc;">
+                成功為地球減少了 <span id="savedCO2" style="color: white; font-weight: bold;">0</span> kg 的碳排放
+            </p>
+            <hr style="border-color: #333; margin: 20px 0;">
+            <p style="margin: 0; font-size: 0.9rem; color: var(--accent-silver);">轉化航空公司營運節省成本</p>
+            <span class="eco-miles">+ <span id="earnedMiles">0</span> Eco-Miles 綠色哩程</span>
+        </div>
+        <button class="primary-btn" style="width: 100%; margin-top: 15px; background-color: #fff; color: #000;">確認並賺取哩程</button>
     </div>
 </div>
 
 <script>
-    // 這裡就是你系統的核心：模擬資料庫 (Mock Database)
-    // 裡面存放了我們預先設定好的航班資料
+    // --- 模擬資料庫 ---
     const flightDatabase = {
-        'BR871': { 
-            route: '台北 (TPE) ✈️ 倫敦 (LHR)', 
-            aircraft: 'Boeing 777-300ER', 
-            baseCO2: 850 
-        },
-        'CI100': { 
-            route: '台北 (TPE) ✈️ 東京 (NRT)', 
-            aircraft: 'Airbus A350-900 (新世代節能)', 
-            baseCO2: 250 
-        },
-        'JX800': { 
-            route: '台北 (TPE) ✈️ 洛杉磯 (LAX)', 
-            aircraft: 'Airbus A350-900', 
-            baseCO2: 750 
-        }
+        'BR871': { route: '台北 ✈️ 倫敦', aircraft: 'Boeing 777-300ER', baseCO2: 850 },
+        'CI100': { route: '台北 ✈️ 東京', aircraft: 'Airbus A350-900', baseCO2: 250 },
+        'JX800': { route: '台北 ✈️ 洛杉磯', aircraft: 'Airbus A350-900', baseCO2: 750 }
     };
 
-    function searchFlight() {
-        // 1. 抓取使用者輸入的值，去掉空白，並轉成大寫
-        const inputStr = document.getElementById('flightInput').value.trim().toUpperCase();
-        
-        const errorMsg = document.getElementById('error-msg');
-        const resultPanel = document.getElementById('result-panel');
+    let currentBaseCO2 = 0; // 存放當前航班的基準碳排
 
-        // 2. 核心邏輯：去模擬資料庫裡面查表
-        if (flightDatabase[inputStr]) {
-            // 如果找得到資料！
-            const data = flightDatabase[inputStr];
+    // --- Step 1: 查詢航班功能 ---
+    function searchFlight() {
+        const input = document.getElementById('flightInput').value.trim().toUpperCase();
+        const data = flightDatabase[input];
+
+        if (data) {
+            // 找到航班
+            currentBaseCO2 = data.baseCO2;
+            document.getElementById('error-msg').style.display = 'none';
             
-            // 把資料庫裡的值塞到畫面上
+            // 顯示基準航班資訊
+            document.getElementById('baselineInfo').style.display = 'block';
             document.getElementById('res-route').innerText = data.route;
             document.getElementById('res-aircraft').innerText = data.aircraft;
-            
-            // 創造一個數字從 0 往上跳的動態感 (這會讓 Demo 看起來很專業)
-            animateValue("res-co2", 0, data.baseCO2, 800);
+            document.getElementById('res-baseCO2').innerText = data.baseCO2;
 
-            // 隱藏錯誤，顯示結果面板
-            errorMsg.style.display = 'none';
-            resultPanel.style.display = 'block';
+            // 解鎖並顯示 Step 2 & 3
+            document.getElementById('step2').style.display = 'block';
+            document.getElementById('step3').style.display = 'block';
 
+            // 將拉桿與餐點重置回預設狀態
+            document.getElementById('baggageSlider').value = 20;
+            document.querySelector('input[name="meal"][value="0"]').checked = true;
+
+            // 執行初始計算
+            updateCalculations();
         } else {
-            // 如果輸入了 AA123 這種找不到的資料 (防呆機制啟動)
-            errorMsg.style.display = 'block';
-            resultPanel.style.display = 'none';
+            // 找不到航班
+            document.getElementById('error-msg').style.display = 'block';
+            document.getElementById('baselineInfo').style.display = 'none';
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step3').style.display = 'none';
         }
     }
 
-    // 這是一個讓數字跳動的輔助動畫函數，增加質感
-    function animateValue(id, start, end, duration) {
-        let obj = document.getElementById(id);
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            obj.innerHTML = Math.floor(progress * (end - start) + start);
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
+    // --- Step 2 & 3: 動態運算與商業邏輯 ---
+    function updateCalculations() {
+        // 1. 取得行李重量
+        const currentBaggage = document.getElementById('baggageSlider').value;
+        document.getElementById('baggageValue').innerText = currentBaggage;
+
+        // 2. 取得餐點扣減值 (素食 -5kg, 無需餐 -12kg)
+        let mealReduction = 0;
+        const mealRadios = document.getElementsByName('meal');
+        for (let radio of mealRadios) {
+            if (radio.checked) {
+                mealReduction = parseInt(radio.value);
+                break;
             }
-        };
-        window.requestAnimationFrame(step);
+        }
+
+        // 3. 商業邏輯：計算減少的碳排 (假設行李基準20kg，每少1kg減2kg碳排)
+        let baggageReduction = (20 - currentBaggage) * 2;
+        if (baggageReduction < 0) baggageReduction = 0; // 超過不懲罰
+
+        const totalReduction = baggageReduction + mealReduction;
+        const finalCO2 = currentBaseCO2 - totalReduction;
+        
+        // 4. 哩程轉換公式：每減 1kg 碳排，換算成 15 點綠色哩程
+        const earnedMiles = totalReduction * 15;
+
+        // 5. 更新前端畫面
+        document.getElementById('finalCO2').innerText = finalCO2;
+        document.getElementById('savedCO2').innerText = totalReduction;
+        document.getElementById('earnedMiles').innerText = earnedMiles;
     }
 </script>
 
