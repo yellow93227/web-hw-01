@@ -241,6 +241,7 @@
             color: #999;
             font-size: 0.8rem;
         }
+
         /* --- Footer 連結專屬樣式 --- */
         .footer-col li a {
             color: var(--text-gray);
@@ -259,6 +260,61 @@
             border-radius: 15px;  /* 加上一點點圓角，更有設計感 */
             margin-bottom: 30px;  /* 與下方標題保持一點距離 */
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* 增加一點陰影，讓圖片浮現出來 */
+        }
+
+        /* --- 會員進度條與特權清單 CSS (新增) --- */
+        .progress-bg {
+            width: 100%;
+            height: 12px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%; /* 預設 0% */
+            background: linear-gradient(90deg, #81c784 0%, var(--primary-green) 100%);
+            border-radius: 10px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1); /* 平滑進度動畫 */
+        }
+
+        .perks-list ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .perk-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+        }
+
+        /* 尚未解鎖的樣式 (灰色、半透明) */
+        .perk-item.locked {
+            opacity: 0.5;
+            filter: grayscale(100%);
+        }
+
+        /* 已經解鎖的樣式 (綠色亮起、加上邊框) */
+        .perk-item.unlocked {
+            opacity: 1;
+            filter: grayscale(0%);
+            background-color: var(--light-green);
+            border-left: 5px solid var(--primary-green);
+            box-shadow: 0 4px 10px rgba(46, 160, 67, 0.1);
+        }
+
+        .perk-icon {
+            font-size: 1.5rem;
         }
     </style>
 </head>
@@ -332,15 +388,15 @@
                         <input type="text" id="flightNo" placeholder="請輸入 BR871 或 CI100" style="text-transform: uppercase;">
                         <!-- 加上一顆按鈕，讓使用者有明確的「送出」動作 -->
                         <button onclick="calculate()" style="background: var(--primary-green); color: white; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: bold; white-space: nowrap;">載入航班</button>
-        </div>
-        <!-- 預設隱藏的提示訊息，找到航班或報錯時才會顯示 -->
-        <p id="flight-info" style="color: var(--primary-green); font-size: 0.95rem; margin-top: 10px; display: none; font-weight: bold;">
-            ✈️ 航線：<span id="route-text"></span> | 基準碳排：<span id="base-text"></span> kg
-        </p>
-        <p id="error-msg" style="color: #ff4d4d; font-size: 0.9rem; margin-top: 10px; display: none;">
-            ⚠️ 查無此航班，測試請輸入 BR871 或 CI100
-        </p>
-        </div>
+                    </div>
+                    <!-- 預設隱藏的提示訊息，找到航班或報錯時才會顯示 -->
+                    <p id="flight-info" style="color: var(--primary-green); font-size: 0.95rem; margin-top: 10px; display: none; font-weight: bold;">
+                        ✈️ 航線：<span id="route-text"></span> | 基準碳排：<span id="base-text"></span> kg
+                    </p>
+                    <p id="error-msg" style="color: #ff4d4d; font-size: 0.9rem; margin-top: 10px; display: none;">
+                        ⚠️ 查無此航班，測試請輸入 BR871 或 CI100
+                    </p>
+                </div>
                 <div class="calc-group">
                     <label>預計託運行李 (kg)</label>
                     <input type="number" id="baggage" value="20" min="0" oninput="calculate()">
@@ -364,6 +420,48 @@
                 <div class="eco-miles" id="milesDisplay">✦ 獲得 Eco-Miles: 0 ✦</div>
             </div>
         </div>
+
+        <!-- ====== 永續會員成就系統 (新增區塊) ====== -->
+        <div class="calc-container" style="margin-top: 30px; border: none; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h3 style="color: var(--text-dark); margin-bottom: 5px;">您的永續會員等級</h3>
+                <p style="color: var(--text-gray); font-size: 0.9rem;">累積 Eco-Miles，解鎖專屬飛行禮遇</p>
+            </div>
+            
+            <!-- 等級狀態與進度條 -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 10px;">
+                <div id="tier-badge" style="font-size: 1.8rem; font-weight: bold; color: var(--primary-green);">🌱 種子會員</div>
+                <div style="font-size: 0.9rem; color: var(--text-gray);">
+                    <span id="current-tier-miles" style="font-weight: bold; color: var(--primary-green); font-size: 1.2rem;">0</span> / <span id="next-tier-target">150</span> 哩
+                </div>
+            </div>
+            
+            <div class="progress-bg">
+                <div class="progress-bar" id="tier-progress"></div>
+            </div>
+            <p id="upgrade-hint" style="text-align: right; font-size: 0.85rem; color: #888; margin-top: 8px;">再獲得 150 哩即可升級至 🌿 綠葉會員</p>
+
+            <!-- 解鎖特權清單 -->
+            <div class="perks-list">
+                <h4 style="margin-bottom: 15px; color: var(--text-dark); border-bottom: 2px solid #eee; padding-bottom: 10px;">解鎖特權</h4>
+                <ul>
+                    <li id="perk-leaf" class="perk-item locked">
+                        <span class="perk-icon">🌿</span> 
+                        <div><strong>綠葉會員 (150 哩)</strong><br>解鎖：機場專屬綠色報到櫃檯</div>
+                    </li>
+                    <li id="perk-tree" class="perk-item locked">
+                        <span class="perk-icon">🌳</span> 
+                        <div><strong>大樹會員 (450 哩)</strong><br>解鎖：優先登機禮遇</div>
+                    </li>
+                    <li id="perk-forest" class="perk-item locked">
+                        <span class="perk-icon">🌲</span> 
+                        <div><strong>森林會員 (900 哩)</strong><br>解鎖：免費使用機場貴賓室</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- ====== 新增區塊結束 ====== -->
+
     </section>
 
     <footer>
@@ -414,60 +512,130 @@
             const flightInfo = document.getElementById('flight-info');
             const errorMsg = document.getElementById('error-msg');
     
-        // 設定一個預設的基準碳排 (如果還沒輸入航班，先不顯示數字)
-        let baseCarbon = 0;
+            // 設定一個預設的基準碳排 (如果還沒輸入航班，先不顯示數字)
+            let baseCarbon = 0;
 
             // 3. 系統查表邏輯 (判斷使用者輸入的航班是否存在)
-         if (flightDatabase[flightInput]) {
-            // 成功找到航班！
-            baseCarbon = flightDatabase[flightInput].baseCarbon;
-            
-            // 把航線跟基準數字顯示在畫面上
-            document.getElementById('route-text').innerText = flightDatabase[flightInput].route;
-            document.getElementById('base-text').innerText = baseCarbon;
+            if (flightDatabase[flightInput]) {
+                // 成功找到航班！
+                baseCarbon = flightDatabase[flightInput].baseCarbon;
+                
+                // 把航線跟基準數字顯示在畫面上
+                document.getElementById('route-text').innerText = flightDatabase[flightInput].route;
+                document.getElementById('base-text').innerText = baseCarbon;
         
-            // 顯示成功訊息，隱藏錯誤訊息
-            flightInfo.style.display = 'block';
-            errorMsg.style.display = 'none';
-        } else {
-            // 找不到航班 (啟動防呆機制)
-            if (flightInput !== "") { // 如果有打字但打錯，顯示紅字錯誤
-                 errorMsg.style.display = 'block';
-            } else { // 如果是空的，就不顯示錯誤
+                // 顯示成功訊息，隱藏錯誤訊息
+                flightInfo.style.display = 'block';
                 errorMsg.style.display = 'none';
+            } else {
+                // 找不到航班 (啟動防呆機制)
+                if (flightInput !== "") { // 如果有打字但打錯，顯示紅字錯誤
+                     errorMsg.style.display = 'block';
+                } else { // 如果是空的，就不顯示錯誤
+                    errorMsg.style.display = 'none';
+                }
+                flightInfo.style.display = 'none';
+                baseCarbon = 750; // 給定一個預設值，讓底下的計算機還是能動
             }
-            flightInfo.style.display = 'none';
-            baseCarbon = 750; // 給定一個預設值，讓底下的計算機還是能動
+
+            // 4. 下方個人化微調的計算邏輯
+            const baggage = parseFloat(document.getElementById('baggage').value) || 0;
+            const mealSaving = parseFloat(document.getElementById('meal').value);
+    
+            // 行李減重計算：假設標準行李是 20kg，每少帶 1kg 減 2kg 碳排
+            const baggageSaving = Math.max(0, (20 - baggage) * 2);
+    
+            // 總減量與最終碳排
+            const totalSavings = baggageSaving + mealSaving;
+            const finalCarbon = Math.max(0, baseCarbon - totalSavings);
+    
+            // 商業邏輯：哩程獎勵 (每減少 1kg 碳排，贈送 15 點 Eco-Miles)
+            const ecoMiles = Math.round(totalSavings * 15);
+
+            // 5. 將算好的結果更新到畫面上
+            // 如果還沒輸入正確航班，最終碳排先顯示 '--'，避免誤導
+            if (flightDatabase[flightInput]) {
+                document.getElementById('totalCarbon').innerText = finalCarbon.toFixed(0);
+            } else {
+                document.getElementById('totalCarbon').innerText = '--';
+            }
+    
+            document.getElementById('savingsText').innerText = `成功為地球減少了 ${totalSavings.toFixed(1)} kg 的碳排放！`;
+            document.getElementById('milesDisplay').innerText = `✦ 獲得 Eco-Miles: +${ecoMiles} ✦`;
+            
+            // 6. 更新永續會員等級與進度
+            updateLoyalty(ecoMiles);
         }
 
-        // 4. 下方個人化微調的計算邏輯
-        const baggage = parseFloat(document.getElementById('baggage').value) || 0;
-        const mealSaving = parseFloat(document.getElementById('meal').value);
-    
-        // 行李減重計算：假設標準行李是 20kg，每少帶 1kg 減 2kg 碳排
-        const baggageSaving = Math.max(0, (20 - baggage) * 2);
-    
-        // 總減量與最終碳排
-        const totalSavings = baggageSaving + mealSaving;
-        const finalCarbon = Math.max(0, baseCarbon - totalSavings);
-    
-        // 商業邏輯：哩程獎勵 (每減少 1kg 碳排，贈送 15 點 Eco-Miles)
-        const ecoMiles = Math.round(totalSavings * 15);
+        // --- 會員等級與解鎖特權邏輯 (新增) ---
+        function updateLoyalty(miles) {
+            const progress = document.getElementById('tier-progress');
+            const badge = document.getElementById('tier-badge');
+            const currentMilesDisplay = document.getElementById('current-tier-miles');
+            const targetDisplay = document.getElementById('next-tier-target');
+            const hint = document.getElementById('upgrade-hint');
 
-        // 5. 將算好的結果更新到畫面上
-        // 如果還沒輸入正確航班，最終碳排先顯示 '--'，避免誤導
-        if (flightDatabase[flightInput]) {
-            document.getElementById('totalCarbon').innerText = finalCarbon.toFixed(0);
-        } else {
-            document.getElementById('totalCarbon').innerText = '--';
+            // 取得特權清單元素
+            const perkLeaf = document.getElementById('perk-leaf');
+            const perkTree = document.getElementById('perk-tree');
+            const perkForest = document.getElementById('perk-forest');
+
+            // 更新畫面上的數字
+            currentMilesDisplay.innerText = miles;
+
+            // 判斷等級與解鎖特權邏輯
+            if (miles < 150) {
+                // 種子會員 (0 - 149)
+                badge.innerText = "🌱 種子會員";
+                targetDisplay.innerText = "150";
+                progress.style.width = (miles / 150 * 100) + "%";
+                hint.innerText = `再獲得 ${150 - miles} 哩即可升級至 🌿 綠葉會員`;
+                
+                // 鎖定所有特權
+                perkLeaf.className = "perk-item locked";
+                perkTree.className = "perk-item locked";
+                perkForest.className = "perk-item locked";
+
+            } else if (miles < 450) {
+                // 綠葉會員 (150 - 449)
+                badge.innerText = "🌿 綠葉會員";
+                targetDisplay.innerText = "450";
+                progress.style.width = ((miles - 150) / (450 - 150) * 100) + "%";
+                hint.innerText = `再獲得 ${450 - miles} 哩即可升級至 🌳 大樹會員`;
+                
+                // 解鎖綠葉特權
+                perkLeaf.className = "perk-item unlocked";
+                perkTree.className = "perk-item locked";
+                perkForest.className = "perk-item locked";
+
+            } else if (miles < 900) {
+                // 大樹會員 (450 - 899)
+                badge.innerText = "🌳 大樹會員";
+                targetDisplay.innerText = "900";
+                progress.style.width = ((miles - 450) / (900 - 450) * 100) + "%";
+                hint.innerText = `再獲得 ${900 - miles} 哩即可解鎖最終階段 🌲 森林會員`;
+                
+                // 解鎖大樹以下特權
+                perkLeaf.className = "perk-item unlocked";
+                perkTree.className = "perk-item unlocked";
+                perkForest.className = "perk-item locked";
+
+            } else {
+                // 森林會員 (900+)
+                badge.innerText = "🌲 森林會員";
+                targetDisplay.innerText = "MAX";
+                progress.style.width = "100%";
+                hint.innerText = "恭喜！您已解鎖最高級別的所有綠色特權 🎉";
+                
+                // 解鎖所有特權
+                perkLeaf.className = "perk-item unlocked";
+                perkTree.className = "perk-item unlocked";
+                perkForest.className = "perk-item unlocked";
+            }
         }
-    
-        document.getElementById('savingsText').innerText = `成功為地球減少了 ${totalSavings.toFixed(1)} kg 的碳排放！`;
-        document.getElementById('milesDisplay').innerText = `✦ 獲得 Eco-Miles: +${ecoMiles} ✦`;
-    }
 
-    // 網頁載入時先執行一次，把預設畫面設定好
-    window.onload = calculate;
+        // 網頁載入時先執行一次，把預設畫面設定好
+        window.onload = calculate;
     </script>
 </body>
 </html>
