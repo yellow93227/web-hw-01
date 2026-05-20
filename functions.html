@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circle Properties Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            border: 1px solid #ddd;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 8px;
+            font-size: 16px;
+        }
+        .output-box {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #eef;
+            border-left: 4px solid #0056b3;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Circle Calculator</h2>
+        
+        <label for="radius"><strong>Enter Radius:</strong></label><br>
+        <input type="number" id="radius" placeholder="e.g., 5" min="0" step="any">
+        <br>
+        
+        <button onclick="showCircumference()">Calculate Circumference</button>
+        <button onclick="showArea()">Calculate Area</button>
+        
+        <div id="output" class="output-box">Results will appear here...</div>
+    </div>
+
+    <script>
+        // 1. Function to calculate circumference (using exact spelling from prompt)
+        function calcCircumfrence(radius) {
+            let circumference = 2 * Math.PI * radius;
+            let resultString = "The circumference is " + circumference.toFixed(2);
+            console.log(resultString); // Output to console as typically expected in basic JS tasks
+            return resultString;
+        }
+
+        // 2. Function to calculate area
+        function calcArea(radius) {
+            let area = Math.PI * radius * radius;
+            let resultString = "The area is " + area.toFixed(2);
+            console.log(resultString); // Output to console
+            return resultString;
+        }
+
+        // --- Helper functions to connect the UI buttons to the logic ---
+        
+        function showCircumference() {
+            let r = parseFloat(document.getElementById("radius").value);
+            if (isNaN(r) || r < 0) {
+                document.getElementById("output").innerText = "Please enter a valid positive number.";
+                return;
+            }
+            document.getElementById("output").innerText = calcCircumfrence(r);
+        }
+
+        function showArea() {
+            let r = parseFloat(document.getElementById("radius").value);
+            if (isNaN(r) || r < 0) {
+                document.getElementById("output").innerText = "Please enter a valid positive number.";
+                return;
+            }
+            document.getElementById("output").innerText = calcArea(r);
+        }
+    </script>
+
+</body>
+</html>
