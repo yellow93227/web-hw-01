@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Object Operations</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        .output-box {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>JavaScript Object Practice</h2>
+    
+    <h3>1. List of all properties:</h3>
+    <div id="properties-list" class="output-box"></div>
+
+    <h3>2. Object after deleting the 'age' property:</h3>
+    <div id="modified-object" class="output-box"></div>
+
+    <script>
+        // Sample object provided in the question
+        var Person = {
+            firstName: "Tony",
+            lastName: "Lee",
+            age: 50,
+            eyeColor: "Blue"
+        };
+
+        // Step 1: List all properties of the object
+        // Object.keys() returns an array of a given object's own enumerable property names.
+        var properties = Object.keys(Person).join(", ");
+        document.getElementById("properties-list").innerText = properties;
+
+        // Step 2: Delete the age property
+        delete Person.age;
+
+        // Step 3: Print the object after deleting the property
+        // JSON.stringify helps to display the object format clearly on the web page
+        document.getElementById("modified-object").innerText = JSON.stringify(Person, null, 4);
+        
+        // Also printing to console as a good practice
+        console.log("Modified Object:", Person);
+    </script>
+
+</body>
+</html>
